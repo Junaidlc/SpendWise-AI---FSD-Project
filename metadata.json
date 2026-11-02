@@ -1,0 +1,6 @@
+{
+  "name": "ApexSpend — AI Expense Tracker & Financial Intelligence",
+  "description": "Smart AI expense tracker powered by Google Gemini, Supabase PostgreSQL, and interactive analytics. Categorize expenses, analyze spending habits, and get actionable savings advice.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
