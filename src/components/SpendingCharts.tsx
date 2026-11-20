@@ -143,9 +143,9 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({
   };
 
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-5">
+    <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-4 sm:p-5">
       {/* Chart View Selection Tabs */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800/80">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4 pb-4 border-b border-slate-800/80">
         <div>
           <h3 className="text-sm font-semibold text-white tracking-tight">
             Financial Trajectory & Analytics
@@ -155,10 +155,10 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({
           </p>
         </div>
 
-        <div className="flex items-center gap-1 bg-slate-900 border border-slate-800 p-1 rounded-lg">
+        <div className="flex items-center gap-1 bg-slate-900 border border-slate-800 p-1 rounded-lg overflow-x-auto max-w-full">
           <button
             onClick={() => setActiveTab('timeline')}
-            className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors cursor-pointer ${
+            className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
               activeTab === 'timeline'
                 ? 'bg-slate-800 text-white shadow-xs'
                 : 'text-slate-400 hover:text-slate-200'
@@ -168,7 +168,7 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({
           </button>
           <button
             onClick={() => setActiveTab('categories')}
-            className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors cursor-pointer ${
+            className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
               activeTab === 'categories'
                 ? 'bg-slate-800 text-white shadow-xs'
                 : 'text-slate-400 hover:text-slate-200'
@@ -178,7 +178,7 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({
           </button>
           <button
             onClick={() => setActiveTab('budgets')}
-            className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors cursor-pointer ${
+            className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
               activeTab === 'budgets'
                 ? 'bg-slate-800 text-white shadow-xs'
                 : 'text-slate-400 hover:text-slate-200'
@@ -188,7 +188,7 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({
           </button>
           <button
             onClick={() => setActiveTab('methods')}
-            className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors cursor-pointer ${
+            className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
               activeTab === 'methods'
                 ? 'bg-slate-800 text-white shadow-xs'
                 : 'text-slate-400 hover:text-slate-200'
@@ -200,7 +200,7 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({
       </div>
 
       {/* Chart Canvas */}
-      <div className="pt-4 h-[320px] w-full">
+      <div className={`pt-4 w-full ${activeTab === 'categories' ? 'min-h-[320px] md:h-[320px]' : 'h-[260px] sm:h-[320px]'}`}>
         {activeTab === 'timeline' && (
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={timelineData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
@@ -241,16 +241,16 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({
         )}
 
         {activeTab === 'categories' && (
-          <div className="h-full flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="w-full md:w-1/2 h-full">
+          <div className="h-full flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6">
+            <div className="w-full md:w-1/2 h-[220px] md:h-full">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={categoryData}
                     cx="50%"
                     cy="50%"
-                    innerRadius={65}
-                    outerRadius={95}
+                    innerRadius={60}
+                    outerRadius={88}
                     paddingAngle={3}
                     dataKey="value"
                   >

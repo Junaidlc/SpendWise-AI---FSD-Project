@@ -84,7 +84,7 @@ export const ExpenseList: React.FC<ExpenseListProps> = ({
     <div className="rounded-xl border border-slate-800 bg-slate-900/40 overflow-hidden">
       {/* Controls Bar */}
       <div className="p-4 border-b border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-3">
-        <div className="flex items-center gap-3 flex-1 max-w-md">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 flex-1 md:max-w-md">
           <div className="relative w-full">
             <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
             <input
@@ -92,14 +92,14 @@ export const ExpenseList: React.FC<ExpenseListProps> = ({
               placeholder="Search merchants, items, tags..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-slate-900/90 border border-slate-800 rounded-lg py-1.5 pl-8 pr-3 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500/50"
+              className="w-full min-h-[40px] sm:min-h-0 bg-slate-900/90 border border-slate-800 rounded-lg py-1.5 pl-8 pr-3 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500/50"
             />
           </div>
 
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="bg-slate-900/90 border border-slate-800 rounded-lg py-1.5 px-3 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50"
+            className="min-h-[40px] sm:min-h-0 bg-slate-900/90 border border-slate-800 rounded-lg py-1.5 px-3 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50"
           >
             {categories.map((c) => (
               <option key={c} value={c} className="bg-slate-900">
@@ -109,13 +109,13 @@ export const ExpenseList: React.FC<ExpenseListProps> = ({
           </select>
         </div>
 
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1 text-xs text-slate-400">
-            <ArrowUpDown className="w-3.5 h-3.5 text-slate-500" />
+        <div className="flex items-center justify-between sm:justify-end gap-2">
+          <div className="flex items-center gap-1 text-xs text-slate-400 flex-1 sm:flex-initial">
+            <ArrowUpDown className="w-3.5 h-3.5 text-slate-500 shrink-0" />
             <select
               value={sortBy}
               onChange={(e: any) => setSortBy(e.target.value)}
-              className="bg-slate-900/90 border border-slate-800 rounded-lg py-1.5 px-2.5 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50"
+              className="w-full sm:w-auto min-h-[40px] sm:min-h-0 bg-slate-900/90 border border-slate-800 rounded-lg py-1.5 px-2.5 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50"
             >
               <option value="date-desc">Newest First</option>
               <option value="date-asc">Oldest First</option>
@@ -126,17 +126,85 @@ export const ExpenseList: React.FC<ExpenseListProps> = ({
 
           <button
             onClick={exportToCsv}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-slate-300 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-lg transition-colors cursor-pointer"
+            className="min-h-[40px] sm:min-h-0 flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-300 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-lg transition-colors cursor-pointer shrink-0"
             title="Download CSV report"
           >
             <Download className="w-3.5 h-3.5 text-emerald-400" />
-            <span className="hidden sm:inline">Export CSV</span>
+            <span>Export CSV</span>
           </button>
         </div>
       </div>
 
-      {/* High-Density Data Grid */}
-      <div className="overflow-x-auto">
+      {/* Mobile Card List (< md) */}
+      <div className="md:hidden divide-y divide-slate-800/70">
+        {filteredExpenses.length === 0 ? (
+          <div className="py-12 px-4 text-center text-slate-500">
+            <Receipt className="w-8 h-8 mx-auto mb-2 opacity-40 text-slate-400" />
+            <p className="text-sm font-medium text-slate-400">No matching expenses found</p>
+            <p className="text-xs text-slate-500 mt-1">Try adjusting your search filters or add a new transaction.</p>
+          </div>
+        ) : (
+          filteredExpenses.map((expense) => (
+            <div key={expense.id} className="p-4 space-y-2">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="font-semibold text-sm text-white truncate">
+                    {expense.merchant}
+                  </div>
+                  <div className="text-[11px] text-slate-400 mt-0.5 flex flex-wrap items-center gap-1.5">
+                    <span>{expense.category}</span>
+                    <span aria-hidden="true">·</span>
+                    <span className="font-mono">{expense.date}</span>
+                  </div>
+                </div>
+                <div className="text-right shrink-0 font-mono font-bold tabular-nums text-sm text-white">
+                  {currencySymbol}
+                  {Number(expense.amount).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
+                </div>
+              </div>
+
+              {expense.notes && (
+                <p className="text-xs text-slate-400 line-clamp-2">{expense.notes}</p>
+              )}
+
+              <div className="flex items-center justify-between pt-1">
+                <span className="flex items-center gap-1.5 text-[11px] text-slate-400">
+                  <CreditCard className="w-3 h-3 text-slate-500" />
+                  <span>{expense.paymentMethod}</span>
+                  {expense.isRecurring && (
+                    <span className="text-[10px] text-emerald-400/90 font-mono">(Recurring)</span>
+                  )}
+                </span>
+
+                <div className="flex items-center gap-1">
+                  {expense.items && expense.items.length > 0 && (
+                    <button
+                      onClick={() => setSelectedExpenseForModal(expense)}
+                      className="min-w-[40px] min-h-[40px] flex items-center justify-center rounded-lg text-slate-400 hover:text-emerald-400 hover:bg-slate-800/60 transition-colors cursor-pointer"
+                      title="View receipt breakdown"
+                    >
+                      <Receipt className="w-4 h-4" />
+                    </button>
+                  )}
+                  <button
+                    onClick={() => onDeleteExpense(expense.id)}
+                    className="min-w-[40px] min-h-[40px] flex items-center justify-center rounded-lg text-slate-500 hover:text-rose-400 hover:bg-slate-800/60 transition-colors cursor-pointer"
+                    title="Delete expense"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Desktop High-Density Data Grid (>= md) */}
+      <div className="hidden md:block overflow-x-auto">
         <table className="w-full text-left text-xs border-collapse">
           <thead>
             <tr className="border-b border-slate-800 bg-slate-950/60 text-slate-400 font-mono text-[11px]">

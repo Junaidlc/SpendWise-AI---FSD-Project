@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, Database, Sparkles, ShieldCheck } from 'lucide-react';
+import { Plus, Database, Sparkles, Menu } from 'lucide-react';
 import { UserProfile, SupabaseConfig } from '../types/finance';
 
 interface HeaderProps {
@@ -8,6 +8,7 @@ interface HeaderProps {
   supabaseConfig: SupabaseConfig;
   onOpenAddExpense: () => void;
   onOpenSupabaseModal: () => void;
+  onOpenMobileMenu: () => void;
   currency: string;
   onChangeCurrency: (c: string) => void;
   onQuickAiAudit: () => void;
@@ -20,25 +21,35 @@ export const Header: React.FC<HeaderProps> = ({
   supabaseConfig,
   onOpenAddExpense,
   onOpenSupabaseModal,
+  onOpenMobileMenu,
   currency,
   onChangeCurrency,
   onQuickAiAudit,
   isAuditing,
 }) => {
   return (
-    <header className="sticky top-0 z-30 h-16 border-b border-slate-800 bg-slate-950/80 backdrop-blur-md px-6 flex items-center justify-between gap-8">
-      {/* Zone 1: Contextual Breadcrumb & Title */}
-      <div className="flex items-center gap-3 shrink-0">
-        <span className="text-sm font-semibold tracking-tight text-white whitespace-nowrap">
+    <header className="sticky top-0 z-30 h-14 sm:h-16 border-b border-slate-800 bg-slate-950/90 backdrop-blur-md px-3 sm:px-6 flex items-center justify-between gap-2 sm:gap-6">
+      {/* Zone 1: Mobile Menu Trigger + Contextual Breadcrumb */}
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+        <button
+          type="button"
+          onClick={onOpenMobileMenu}
+          className="lg:hidden min-w-[44px] min-h-[44px] -ml-1 flex items-center justify-center rounded-lg text-slate-300 hover:text-white hover:bg-slate-900 transition-colors cursor-pointer shrink-0"
+          aria-label="Open navigation menu"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+
+        <span className="text-sm font-semibold tracking-tight text-white whitespace-nowrap shrink-0">
           ApexSpend
         </span>
-        <span className="text-slate-600" aria-hidden="true">/</span>
-        <span className="text-sm text-slate-400 whitespace-nowrap">
+        <span className="hidden sm:inline text-slate-600 shrink-0" aria-hidden="true">/</span>
+        <span className="hidden sm:inline text-sm text-slate-400 truncate">
           {currentViewTitle}
         </span>
       </div>
 
-      {/* Zone 2: System Status & Currency Selector */}
+      {/* Zone 2: System Status & Currency Selector (Desktop) */}
       <div className="hidden lg:flex items-center gap-4 text-xs font-medium text-slate-400">
         <button
           onClick={onOpenSupabaseModal}
@@ -55,44 +66,48 @@ export const Header: React.FC<HeaderProps> = ({
         </button>
 
         <div className="flex items-center gap-1 border border-slate-800 bg-slate-900/60 rounded-lg p-0.5">
-          {['USD', 'EUR', 'GBP'].map((cur) => (
+          {['INR', 'USD', 'EUR', 'GBP'].map((cur) => (
             <button
               key={cur}
               onClick={() => onChangeCurrency(cur)}
-              className={`px-2 py-1 rounded text-[11px] font-mono transition-colors ${
+              className={`px-2 py-1 rounded text-[11px] font-mono transition-colors cursor-pointer ${
                 currency === cur
                   ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
                   : 'text-slate-400 hover:text-slate-200'
               }`}
             >
-              {cur === 'USD' ? '$ USD' : cur === 'EUR' ? '€ EUR' : '£ GBP'}
+              {cur === 'INR' ? '₹ INR' : cur === 'USD' ? '$ USD' : cur === 'EUR' ? '€ EUR' : '£ GBP'}
             </button>
           ))}
         </div>
       </div>
 
       {/* Zone 3: Actions & Profile */}
-      <div className="flex items-center gap-3 shrink-0">
+      <div className="flex items-center gap-2 sm:gap-3 shrink-0">
         <button
           onClick={onQuickAiAudit}
           disabled={isAuditing}
-          className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-slate-300 border border-slate-800 rounded-lg bg-slate-900 hover:bg-slate-800 hover:text-white transition-colors cursor-pointer disabled:opacity-50"
+          className="flex items-center justify-center gap-2 min-w-[40px] min-h-[40px] sm:min-h-0 px-2.5 sm:px-3 py-1.5 text-xs font-medium text-slate-300 border border-slate-800 rounded-lg bg-slate-900 hover:bg-slate-800 hover:text-white transition-colors cursor-pointer disabled:opacity-50"
+          title="Run Gemini AI Financial Audit"
         >
           <Sparkles className={`w-3.5 h-3.5 text-emerald-400 ${isAuditing ? 'animate-spin' : ''}`} />
-          <span>{isAuditing ? 'Analyzing...' : 'Gemini AI Audit'}</span>
+          <span className="hidden sm:inline whitespace-nowrap">
+            {isAuditing ? 'Analyzing...' : 'Gemini AI Audit'}
+          </span>
         </button>
 
         <button
           onClick={onOpenAddExpense}
-          className="flex items-center gap-2 px-3.5 py-1.5 text-xs font-semibold text-slate-950 bg-emerald-400 rounded-lg hover:bg-emerald-300 active:scale-[0.98] transition-all cursor-pointer whitespace-nowrap"
+          className="flex items-center gap-1.5 min-h-[40px] sm:min-h-0 px-3 sm:px-3.5 py-1.5 text-xs font-semibold text-slate-950 bg-emerald-400 rounded-lg hover:bg-emerald-300 active:scale-[0.98] transition-all cursor-pointer whitespace-nowrap"
         >
           <Plus className="w-3.5 h-3.5 stroke-[3]" />
-          <span>Add Expense</span>
+          <span className="sm:hidden">Add</span>
+          <span className="hidden sm:inline">Add Expense</span>
         </button>
 
         <div
           onClick={onOpenSupabaseModal}
-          className="flex items-center gap-2.5 pl-2 border-l border-slate-800 cursor-pointer group"
+          className="flex items-center gap-2.5 pl-1.5 sm:pl-2 border-l border-slate-800 cursor-pointer group"
           title="User profile and account settings"
         >
           <img

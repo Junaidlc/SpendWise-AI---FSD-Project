@@ -46,9 +46,10 @@ export default function App() {
   const [currency, setCurrency] = useState<string>('INR');
   const currencySymbol = currency === 'INR' ? '₹' : currency === 'USD' ? '$' : currency === 'EUR' ? '€' : '£';
 
-  // Modals
+  // Modals & Mobile Drawer
   const [isAddExpenseOpen, setIsAddExpenseOpen] = useState(false);
   const [isSupabaseModalOpen, setIsSupabaseModalOpen] = useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   // AI Analysis State
   const [aiAnalysis, setAiAnalysis] = useState<AIAnalysisResult | null>(null);
@@ -213,14 +214,20 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans overflow-x-hidden">
       <div className="flex flex-1 min-h-screen">
-        {/* Sidebar */}
+        {/* Sidebar (Drawer on mobile, Fixed Rail on lg+) */}
         <Sidebar
           activeTab={activeTab}
           onSelectTab={setActiveTab}
           onQuickAddViaPrompt={handleQuickAddViaPrompt}
           totalExpensesCount={expenses.length}
+          isOpenMobile={isMobileSidebarOpen}
+          onCloseMobile={() => setIsMobileSidebarOpen(false)}
+          currency={currency}
+          onChangeCurrency={setCurrency}
+          supabaseConfig={supabaseConfig}
+          onOpenSupabaseModal={() => setIsSupabaseModalOpen(true)}
         />
 
         {/* Main Content Area */}
@@ -231,13 +238,14 @@ export default function App() {
             supabaseConfig={supabaseConfig}
             onOpenAddExpense={() => setIsAddExpenseOpen(true)}
             onOpenSupabaseModal={() => setIsSupabaseModalOpen(true)}
+            onOpenMobileMenu={() => setIsMobileSidebarOpen(true)}
             currency={currency}
             onChangeCurrency={setCurrency}
             onQuickAiAudit={runAiAudit}
             isAuditing={isAuditing}
           />
 
-          <main className="flex-1 p-6 md:p-8 max-w-7xl w-full mx-auto space-y-8">
+          <main className="flex-1 p-4 sm:p-6 md:p-8 max-w-7xl w-full mx-auto space-y-6 sm:space-y-8">
             {/* VIEW 1: OVERVIEW (Unified Executive Dashboard) */}
             {activeTab === 'overview' && (
               <div className="space-y-6">

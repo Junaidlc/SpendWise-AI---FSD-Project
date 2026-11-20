@@ -114,21 +114,21 @@ How can I assist your financial planning today? You can ask me to:
   ];
 
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/40 flex flex-col h-[650px] overflow-hidden">
+    <div className="rounded-xl border border-slate-800 bg-slate-900/40 flex flex-col h-[calc(100vh-12rem)] min-h-[460px] sm:h-[650px] overflow-hidden">
       {/* Header with financial context chips */}
-      <div className="p-4 border-b border-slate-800 bg-slate-950/60 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+      <div className="p-3.5 sm:p-4 border-b border-slate-800 bg-slate-950/60 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
             <Bot className="w-4 h-4" />
           </div>
-          <div>
-            <h3 className="text-sm font-semibold text-white tracking-tight flex items-center gap-2">
-              <span>ApexSpend Financial Strategist</span>
-              <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+          <div className="min-w-0">
+            <h3 className="text-sm font-semibold text-white tracking-tight flex flex-wrap items-center gap-2">
+              <span className="truncate">ApexSpend Financial Strategist</span>
+              <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 whitespace-nowrap">
                 Gemini 3.8 Flash
               </span>
             </h3>
-            <p className="text-[11px] text-slate-400">
+            <p className="text-[11px] text-slate-400 truncate">
               Interactive financial planning grounded in your active transactions & budgets
             </p>
           </div>
