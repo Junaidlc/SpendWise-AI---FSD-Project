@@ -544,18 +544,34 @@ async function startServer() {
     });
     app.use(vite.middlewares);
   } else {
-    const distPath = path.resolve(__dirname, 'dist');
+    const distPath = path.resolve(process.cwd(), 'dist');
     app.use(express.static(distPath));
     app.get('*', (_req: Request, res: Response) => {
       res.sendFile(path.join(distPath, 'index.html'));
     });
   }
 
-  app.listen(PORT, '0.0.0.0', () => {
+  const server = app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 ApexSpend server running on http://0.0.0.0:${PORT}`);
+  });
+
+  server.on('error', (err: any) => {
+    if (err.code === 'EADDRINUSE') {
+      const nextPort = PORT + 1;
+      console.warn(`⚠️ Port ${PORT} is already in use by another process. Retrying on port ${nextPort}...`);
+      app.listen(nextPort, '0.0.0.0', () => {
+        console.log(`🚀 ApexSpend server running on http://0.0.0.0:${nextPort}`);
+      });
+    } else {
+      console.error('Server error:', err);
+    }
   });
 }
 
-startServer().catch((err) => {
-  console.error('Failed to start server:', err);
-});
+if (!process.env.VERCEL) {
+  startServer().catch((err) => {
+    console.error('Failed to start server:', err);
+  });
+}
+
+export default app;
